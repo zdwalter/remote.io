@@ -8,7 +8,7 @@ var express = require('express');
 var app = module.exports = express.createServer();
 var io = require('socket.io').listen(app);
 require.paths.push(__dirname);
-var events = require('remote.events');
+var EVENTS = require('remote.events');
 
 // Configuration
 
@@ -48,11 +48,11 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         io.sockets.emit('disconnected');
     });
-    socket.emit(events.news, {hello: 'world'});
 
-    socket.on(events.other, function(msg) {
-        console.log('say:'+msg);
+    socket.on(EVENTS.OTHER, function(msg) {
+        socket.broadcast.emit(EVENTS.NEWS, msg);
     });
+
 });
 // Only listen on $ node app.js
 
