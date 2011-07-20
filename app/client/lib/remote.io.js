@@ -1,5 +1,5 @@
 //if (typeof remote != 'undefined') { return 0; }
-var remote_io_site = '10.228.208.118';
+var remote_io_site = 'app.gfw4.info'; //'10.228.208.118';
 
 var remote = function() {};
 remote.init = function() {
