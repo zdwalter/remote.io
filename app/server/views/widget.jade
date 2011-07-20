@@ -1,0 +1,11 @@
+button(onclick='remote.emit.move("up")') up
+button(onclick='remote.emit.move("down")') down
+button(onclick='remote.emit.move("left")') left
+button(onclick='remote.emit.move("right")') right
+
+p redirect url
+input(type='text',id='remote_redirect_url',value='http://t.gfw4.info')
+button(onclick='remote.emit.redirect()') go
+button(onclick='remote.emit.share()') share
+p Status
+  span(id='remote_io_status')  Moving

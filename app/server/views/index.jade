@@ -1,5 +1,16 @@
 h1= title
 p Welcome to #{title}
 script(src='/javascripts/remote.io.js')
-p drag me to your bookmars toolbar that will load Remote.IO onto whatever page you are on:
+p drag me to your bookmarks toolbar that will load Remote.IO onto whatever page you are on:
 a(class='bookmarklet', href="javascript:(function(){var d=document,s=d.createElement('script'),b=d.body;s.setAttribute('src','http://remote.gfw4.info/remote.io.js');b.appendChild(s);})()") Remote.IO
+
+p usage:
+p 1. open any webpage
+p 2. click Remoto.IO bookmark in bookmarks toolbar
+p 3. open this page in phone
+p 4. click on phone's button to control remote webpage
+
+button(onclick='remote.move("up")') up
+button(onclick='remote.move("down")') down
+button(onclick='remote.move("left")') left
+button(onclick='remote.move("right")') right

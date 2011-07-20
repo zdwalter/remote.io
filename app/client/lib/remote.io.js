@@ -1,4 +1,5 @@
-if (typeof remote != 'undefined') { return 0; }
+//if (typeof remote != 'undefined') { return 0; }
+var remote_io_site = '10.228.208.118';
 
 var remote = function() {};
 remote.init = function() {
@@ -13,21 +14,16 @@ remote.init = function() {
         while(--cnt) { return; }
         self.initWidget(); 
         self.initSocket();
+        self.initMethods();
     }
     var self = this;
     var d = document;
     var cnt = 0;
     var b = d.body;
-    appendRequire('http://remote.gfw4.info/socket.io/socket.io.js');
-    appendRequire('http://remote.gfw4.info/javascripts/remote.events.js');
-    appendRequire('http://remote.gfw4.info/javascripts/remote.methods.js');
-};
-
-remote.html = function() {
-    return "<button id='up' onclick='remote.move(\"up\")'>up</button>\n"
-     + "<button id='down' onclick='remote.move(\"down\")'>down</button>\n"
-     + "<button id='left' onclick='remote.move(\"left\")'>left</button>\n"
-     + "<button id='right' onclick='remote.move(\"right\")'>right</button>\n";
+    appendRequire('http://'+remote_io_site+'/socket.io/socket.io.js');
+    appendRequire('http://'+remote_io_site+'/javascripts/remote.events.js');
+    appendRequire('http://'+remote_io_site+'/javascripts/remote.methods.js');
+    appendRequire('http://'+remote_io_site+'/javascripts/jquery-1.6.2.min.js');
 };
 
 remote.initWidget = function() {
@@ -38,51 +34,108 @@ remote.initWidget = function() {
         position = 'absolute';
         top = self.pageYOffset + 'px';
         right = '0';
-        width = '100px';
-        height = '100px';
+        width = '200px';
+        height = '200px';
         zIndex = 9999;
         border = '1px solid';
     }
-    widget.innerHTML=remote.html();
+    widget.innerHTML = '<style>span { color:red; display:none; }</style>';
+    widget.innerHTML += '<button onclick="remote.emit.move(&quot;up&quot;)">up</button><button onclick="remote.emit.move(&quot;down&quot;)">down</button><button onclick="remote.emit.move(&quot;left&quot;)">left</button><button onclick="remote.emit.move(&quot;right&quot;)">right</button><p>redirect url</p><input type="text" id="remote_redirect_url" value="http://t.gfw4.info"/><button onclick="remote.emit.redirect()">go</button><button onclick="remote.emit.share()">share</button><p>Status<span id="remote_io_status">Moving</span></p>';
     d.body.appendChild(widget);
-}
+//    $.ajax({
+//        url:'http://'+remote_io_site+'/widget', 
+//        success: function(data){
+//            widget.innerHTML = data;
+//            self.widget = widget;
+//            $(window).scroll(function() {
+//                widget.style.top = self.pageYOffset + 'px';
+//            });
+//        }
+//    });
+};
+
+remote.initIframe = function(url) {
+    var self = this;
+    var d = document;
+    var browser = d.createElement('div');
+    browser.id = 'remote.io.browser';
+    with(browser.style) {
+        position = 'absolute';
+        width = '800px';
+        height = '600px';
+        top = '0px';
+        left = '0px';
+        border = '1px solid';
+    }
+    d.body.appendChild(browser);
+    browser.innerHTML = '<iframe id="remote.io.iframe" style="width: 100%;height: 100%" src="'+url+'"></iframe>';
+    self.iframe = $("iframe");
+};
 
 remote.initSocket = function() {
-    this.socket = io.connect('http://remote.gfw4.info');
-    this.socket.on(EVENTS.NEWS, function(data) {
-        console.log(JSON.stringify(data));
-        remote.act(data);
+    var url = 'http://'+remote_io_site;
+    console.log(url);
+    this.socket = io.connect(url); // FIXME: conflick with jquery.com
+    this.socket.on(EVENTS.NEWS, function(msg) {
+        console.log(JSON.stringify(msg));
+        remote.act[msg.method](msg.data);
     });
 };
 
-remote.move = function(direction) {
-    this.socket.emit(EVENTS.OTHER, {method: METHODS.MOVE, data: direction });
-};
+remote.initMethods = function() {
+    var self = this;
+    remote.emit = {};
+    
+    remote.emit[METHODS.REDIRECT] = function() {
+        var url = $('input#remote_redirect_url').val();
+        self.socket.emit(EVENTS.OTHER, {method: METHODS.REDIRECT, data: url});
+    };
+    
+    remote.emit[METHODS.MOVE] =  function(direction) {
+        self.socket.emit(EVENTS.OTHER, {method: METHODS.MOVE, data: direction });
+    };
 
-remote.act = function(msg) {
-    method = msg.method;
-    switch(method) {
-        case METHODS.MOVE:
-            return remote.act.move(msg.data);
+    remote.emit[METHODS.SHARE] = function() {
+        var url;
+        if (typeof self.iframe != 'undefined') {
+            console.log(self.iframe);
+            url = self.iframe.attr('src');
+        }
+        else {
+            url = window.location.href;
+        }
+        self.socket.emit(EVENTS.OTHER, {method: METHODS.REDIRECT, data: url});
+    };
+    
+    remote.act = {};
+    
+    remote.act[METHODS.MOVE] = function(direction) {
+        var target;
+        if (typeof self.iframe != 'undefined') { 
+            target = self.iframe.contents().find("body");
+        } else {
+            target = $(window);
+        }
+        // window controller
+        var scroll = {
+        down: function() { target.scrollTop(300); }, 
+        up: function() { target.scrollTop(-300); }, 
+        left: function() { target.scrollLeft(-300); },
+        right: function() { target.scrollLeft(300); }
+        };
+        
+        $("#remote_io_status").css("display", "inline").fadeOut("slow"); 
+        scroll[direction.toLowerCase()]();
     }
+    
+    remote.act[METHODS.REDIRECT] = function(url) {
+        document.body.innerHTML = '';
+        self.initWidget();
+        self.initIframe(url);
+    };
+
 };
 
-remote.act.move = function(direction) {
-    console.log('move:'+direction);
-    // window controller
-    var scroll = new function() {
-    };
-
-    scroll.down = function() {
-        window.scrollBy(0, 100);
-    };
-
-    scroll.up = function() {
-        window.scrollBy(0, -100);
-    };
-
-    scroll[direction.toLowerCase()]();
-};
 (function init() {
     remote.init();
 })();

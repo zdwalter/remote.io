@@ -1,6 +1,8 @@
 (function() {
     var _methods = {
         MOVE: 'move',
+        REDIRECT: 'redirect',
+        SHARE: 'share',
         OTHER: 'other'
     };
     if (typeof module != 'undefined') {

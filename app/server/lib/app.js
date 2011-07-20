@@ -42,6 +42,13 @@ app.get('/', function(req, res){
   });
 });
 
+app.get('/widget', function(req, res){
+  res.render('widget', {
+      layout: false,
+    title: 'Remote.IO'
+  });
+});
+
 
 // IO
 io.sockets.on('connection', function(socket) {
