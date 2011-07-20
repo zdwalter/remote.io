@@ -28,6 +28,10 @@ app.configure('development', function(){
 
 app.configure('production', function(){
   app.use(express.errorHandler()); 
+  io.enable('browser client minification');
+  io.enable('browser client etag');
+  io.set('log level', 1);
+  io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']);
 });
 
 // Routes

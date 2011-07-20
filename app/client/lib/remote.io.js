@@ -1,6 +1,5 @@
 var remote = function() {};
-var d = document;
-remote.loadRequire = function() {
+remote.init = function() {
     function appendRequire(src) {
         var s = d.createElement('script');
         s.setAttribute('src', src);
@@ -10,17 +9,17 @@ remote.loadRequire = function() {
     }
     function onload() {
         while(--cnt) { return; }
-        self.init(); 
-
+        self.start(); 
     }
     var self = this;
+    var d = document;
     var cnt = 0;
     var b = d.body;
     appendRequire('/socket.io/socket.io.js');
     appendRequire('/javascripts/remote.events.js');
 };
 
-remote.init = function() {
+remote.start = function() {
     var socket = io.connect();
     socket.on('news', function(data) {
         console.log(data);
@@ -29,5 +28,5 @@ remote.init = function() {
 };
 
 (function init() {
-    remote.loadRequire();
+    remote.init();
 })();

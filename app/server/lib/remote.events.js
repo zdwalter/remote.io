@@ -6,7 +6,7 @@
     if (typeof module != 'undefined') {
             module.exports = _events;
     }
-    else {
+    else if (typeof window != 'undefined'){
         events = _events; // set global variable for browser
     }
     return _events;
