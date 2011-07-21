@@ -43,7 +43,7 @@ remote.initWidget = function() {
         widget.style['margin-right'] = '-100px';
     }
     widget.innerHTML = '<style>span { color:red; display:none; }</style>';
-    widget.innerHTML += '<button onclick="remote.emit.move(&quot;up&quot;)">up</button><button onclick="remote.emit.move(&quot;down&quot;)">down</button><button onclick="remote.emit.move(&quot;left&quot;)">left</button><button onclick="remote.emit.move(&quot;right&quot;)">right</button><p>redirect url</p><input type="text" id="remote_redirect_url" value="http://t.gfw4.info"/><button onclick="remote.emit.redirect()">go</button><button onclick="remote.emit.share()">share</button><p>Status<span id="remote_io_status">Moving</span></p>';
+    widget.innerHTML += '<button onclick="remote.emit.move(&quot;up&quot;)">up</button><button onclick="remote.emit.move(&quot;down&quot;)">down</button><button onclick="remote.emit.move(&quot;left&quot;)">left</button><button onclick="remote.emit.move(&quot;right&quot;)">right</button><p>redirect url</p><input type="text" id="remote_redirect_url" value="http://t.gfw4.info"/><button onclick="remote.emit.redirect()">go</button><button onclick="remote.emit.share()">share</button><p>Status<span id="remote_io_status">Moving</span></p><input type="text" x-webkit-speech value="say your command"/>';
     d.body.appendChild(widget);
     self.widget = widget;
 //    $.ajax({
