@@ -1,0 +1,34 @@
+link(rel='stylesheet', href='/stylesheets/style.css')
+
+div(id='joystick')
+  div(id='direction')
+    div(id='button_null') 
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:38})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:38})') ^
+    div(id='button_null')
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:37})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:37})') <
+    div(id='button_null')
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:39})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:39})') >
+    div(id='button_null')
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:40})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:40})') V
+  
+  div(id='key')
+    div(id='button_null')
+    div(id='button_null')
+    div(id='button_null')
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:88})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:88})') A
+    div(id='button_null')
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:90})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:90})') B
+  
+  div(id='function')
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:13})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:13})') Start
+    div(id='button')
+      a(ontouchstart='remote.emit["key"]({type:"keydown",keyCode:17})', ontouchend='remote.emit["key"]({type:"keyup",keyCode:17})') Select
+
+script(src='/javascripts/remote.io.js')

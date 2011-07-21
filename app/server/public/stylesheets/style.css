@@ -5,8 +5,59 @@ body {
 
 a {
   color: #00B7FF;
+  height: 100px;
+  width: 100px;
 }
 
 span { 
     color:red; display:none; 
 }
+
+div#joystick {
+}
+
+div#direction {
+    border: 1px;
+    background: #4180B6;
+    width: 300px;
+    height: 300px;
+    position: absolute;
+}
+
+
+div#button_null{
+    float: left;
+    width: 100px;
+    height: 100px;
+}
+
+div#button{
+    float: left;
+    width: 100px;
+    height: 100px;
+    border: 1px;
+    background: #0000B6;
+    text-align: center;
+    font-size: 28px;
+
+}
+
+div#key{
+    border: 1px;
+    background: #4180B6;
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    right: 100px;
+}
+
+div#function{
+    border: 1px;
+    background: #4180B6;
+    width: 200px;
+    height: 100px;
+    position: absolute;
+    left: 370px;
+}
+
+

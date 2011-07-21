@@ -1,5 +1,5 @@
 //if (typeof remote != 'undefined') { return 0; }
-var remote_io_site = 'app.gfw4.info'; 
+var remote_io_site = 'app.gfw4.info'; //'10.228.208.39'; 
 
 var remote = function() {};
 remote.init = function() {
@@ -12,6 +12,7 @@ remote.init = function() {
     }
     function onload() {
         while(--cnt) { return; }
+        self.initEvent();
         self.initWidget(); 
         self.initSocket();
         self.initMethods();
@@ -21,10 +22,25 @@ remote.init = function() {
     var cnt = 0;
     var b = d.body;
     appendRequire('http://'+remote_io_site+'/socket.io/socket.io.js');
-    appendRequire('http://'+remote_io_site+'/javascripts/jquery-1.6.2.min.js');
+    if (typeof $ == 'undefined') {
+        console.log('load jquery');
+      appendRequire('http://'+remote_io_site+'/javascripts/jquery-1.6.2.min.js');
+    }
     appendRequire('http://'+remote_io_site+'/javascripts/remote.events.js');
     appendRequire('http://'+remote_io_site+'/javascripts/remote.methods.js');
-    appendRequire('http://'+remote_io_site+'/javascripts/remote.device.js');
+    //appendRequire('http://'+remote_io_site+'/javascripts/remote.device.js');
+};
+
+remote.initEvent = function() {
+    var preventDefault = function(event) {
+            event.preventDefault();
+    };
+    document.ontouchmove = preventDefault;
+    document.ontouchstart = preventDefault;
+    document.ontouchend = preventDefault;
+    document.ondragstart= preventDefault;
+    //document.ondblclick = preventDefault;
+    //document.onclick = preventDefault;
 };
 
 remote.initWidget = function() {
@@ -36,14 +52,14 @@ remote.initWidget = function() {
         _position = 'absolute';
         top = self.pageYOffset + 'px';
         right = '0px';
-        width = '200px';
-        height = '200px';
+        width = '1px';
+        height = '1px';
         zIndex = 9999;
         border = '1px solid';
-        widget.style['margin-right'] = '-100px';
+        //widget.style['margin-right'] = '-100px';
     }
-    widget.innerHTML = '<style>span { color:red; display:none; }</style>';
-    widget.innerHTML += '<button onclick="remote.emit.move(&quot;up&quot;)">up</button><button onclick="remote.emit.move(&quot;down&quot;)">down</button><button onclick="remote.emit.move(&quot;left&quot;)">left</button><button onclick="remote.emit.move(&quot;right&quot;)">right</button><p>redirect url</p><input type="text" id="remote_redirect_url" value="http://t.gfw4.info"/><button onclick="remote.emit.redirect()">go</button><button onclick="remote.emit.share()">share</button><p>Status<span id="remote_io_status">Moving</span></p><input type="text" x-webkit-speech value="say your command"/>';
+    //widget.innerHTML = '<style>span { color:red; display:none; }</style>';
+    //widget.innerHTML += '<button onclick="remote.emit.move(&quot;up&quot;)">up</button><button onclick="remote.emit.move(&quot;down&quot;)">down</button><button onclick="remote.emit.move(&quot;left&quot;)">left</button><button onclick="remote.emit.move(&quot;right&quot;)">right</button><p>redirect url</p><input type="text" id="remote_redirect_url" value="http://t.gfw4.info"/><button onclick="remote.emit.redirect()">go</button><button onclick="remote.emit.share()">share</button><p>Status<span id="remote_io_status">Moving</span></p><input type="text" x-webkit-speech value="say your command"/>';
     d.body.appendChild(widget);
     self.widget = widget;
 //    $.ajax({
@@ -88,6 +104,9 @@ remote.initSocket = function() {
 
 remote.initMethods = function() {
     var self = this;
+    $(document).keypress(function(e) { console.log('press:'+JSON.stringify(e.keyCode)); });
+    $(document).keyup(function(e) { console.log('up:'+JSON.stringify(e.keyCode)); });
+    $(document).bind('keydown',function(e) { console.log('down:'+JSON.stringify(e.keyCode)); });
     remote.emit = {};
     
     remote.emit[METHODS.REDIRECT] = function() {
@@ -110,26 +129,47 @@ remote.initMethods = function() {
         }
         self.socket.emit(EVENTS.OTHER, {method: METHODS.REDIRECT, data: url});
     };
+
+    remote.emit[METHODS.KEY] = function(evt) {
+        self.socket.emit(EVENTS.OTHER, {method: METHODS.KEY, data: evt});
+    };
     
     remote.act = {};
     
     remote.act[METHODS.MOVE] = function(direction) {
-        var target;
-        if (typeof self.iframe != 'undefined') { 
-            target = self.iframe.contents().find("body");
-        } else {
-            target = $(window);
+        direction = direction.toLowerCase();
+        var evt = {};
+        switch(direction) {
+            case 'up':
+              evt.keyCode = 38;
+              break;
+            case 'down':
+              evt.keyCode = 40;
+              break;
+            case 'left':
+              evt.keyCode = 37;
+              break;
+            case 'right':
+              evt.keyCode = 39;
+              break;
+            case 'a':
+              evt.keyCode = 88;
+              break;
+            case 'b':
+              evt.keyCode = 90;
+              break;
+            case 'start':
+              evt.keyCode = 13;
+              break;
+            case 'select':
+              evt.keyCode = 17;
+              break;
         }
-        // window controller
-        var scroll = {
-        down: function() { target.scrollTop(300); }, 
-        up: function() { target.scrollTop(-300); }, 
-        left: function() { target.scrollLeft(-300); },
-        right: function() { target.scrollLeft(300); }
-        };
-        
-        $("#remote_io_status").css("display", "inline").fadeOut("slow"); 
-        scroll[direction.toLowerCase()]();
+        $(document).trigger({type: 'keydown', keyCode: evt.keyCode});
+    }
+
+    remote.act[METHODS.KEY] = function(evt) {
+        $(document).trigger({type: evt.type, keyCode: evt.keyCode});
     }
     
     remote.act[METHODS.REDIRECT] = function(url) {

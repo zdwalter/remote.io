@@ -3,7 +3,8 @@
         MOVE: 'move',
         REDIRECT: 'redirect',
         SHARE: 'share',
-        OTHER: 'other'
+        OTHER: 'other',
+        KEY: 'key',
     };
     if (typeof module != 'undefined') {
             module.exports = _methods;

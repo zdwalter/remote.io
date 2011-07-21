@@ -49,6 +49,13 @@ app.get('/widget', function(req, res){
   });
 });
 
+app.get('/joystick', function(req, res){
+  res.render('joystick', {
+      layout: false,
+    title: 'Remote.IO'
+  });
+});
+
 
 // IO
 io.sockets.on('connection', function(socket) {
