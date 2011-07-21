@@ -1,5 +1,5 @@
 //if (typeof remote != 'undefined') { return 0; }
-var remote_io_site = 'app.gfw4.info'; //'10.228.208.118';
+var remote_io_site = '10.228.208.39';; //'app.gfw4.info'; 
 
 var remote = function() {};
 remote.init = function() {
@@ -21,9 +21,10 @@ remote.init = function() {
     var cnt = 0;
     var b = d.body;
     appendRequire('http://'+remote_io_site+'/socket.io/socket.io.js');
+    appendRequire('http://'+remote_io_site+'/javascripts/jquery-1.6.2.min.js');
     appendRequire('http://'+remote_io_site+'/javascripts/remote.events.js');
     appendRequire('http://'+remote_io_site+'/javascripts/remote.methods.js');
-    appendRequire('http://'+remote_io_site+'/javascripts/jquery-1.6.2.min.js');
+    appendRequire('http://'+remote_io_site+'/javascripts/remote.device.js');
 };
 
 remote.initWidget = function() {
@@ -31,17 +32,20 @@ remote.initWidget = function() {
     var widget = d.createElement('div');
     widget.id = 'remote.io.widget';
     with (widget.style) {
-        position = 'absolute';
+        position = 'fixed';
+        _position = 'absolute';
         top = self.pageYOffset + 'px';
-        right = '0';
+        right = '0px';
         width = '200px';
         height = '200px';
         zIndex = 9999;
         border = '1px solid';
+        widget.style['margin-right'] = '-100px';
     }
     widget.innerHTML = '<style>span { color:red; display:none; }</style>';
     widget.innerHTML += '<button onclick="remote.emit.move(&quot;up&quot;)">up</button><button onclick="remote.emit.move(&quot;down&quot;)">down</button><button onclick="remote.emit.move(&quot;left&quot;)">left</button><button onclick="remote.emit.move(&quot;right&quot;)">right</button><p>redirect url</p><input type="text" id="remote_redirect_url" value="http://t.gfw4.info"/><button onclick="remote.emit.redirect()">go</button><button onclick="remote.emit.share()">share</button><p>Status<span id="remote_io_status">Moving</span></p>';
     d.body.appendChild(widget);
+    self.widget = widget;
 //    $.ajax({
 //        url:'http://'+remote_io_site+'/widget', 
 //        success: function(data){
