@@ -1,23 +1,37 @@
+remote.device = {};
+remote.device.last_time = new Date().getTime();
+remote.device.keyCode_v = null;
+remote.device.keyCode_h = null;
+
 window.addEventListener('deviceorientation', function(event) {
   var a = event.alpha;
   var vertical = event.beta;
   var horizontal = -event.gamma;
-  if (typeof self.widget != 'undefined') {
-    var now = new Date().getTime();
-    if (new Date().getTime() - self.widget.last_time < 300) { return; }
-    self.widget.last_time = now;
-    with (self.widget.style) {
-    next_top = vertical + parseInt(top);
-    if (600 > next_top && next_top > 0) { top = next_top +'px'; }
-    next_right = horizontal + parseInt(right);
-    if (800 > next_right && next_right > 0) { right = next_right + 'px'; }
-    //console.log('orientation:'+a+','+vertical+','+horizontal);
-    //console.log('position:'+(vertical+parseInt(top))+','+right);
-    
-    if (vertical > 10) remote.emit[METHODS.MOVE]('up');
-    if (vertical < -10) remote.emit[METHODS.MOVE]('down');
-    if (horizontal < -10) remote.emit[METHODS.MOVE]('right');
-    if (horizontal > 10) remote.emit[METHODS.MOVE]('left');
-    }
+  var now = new Date().getTime();
+  if (new Date().getTime() - remote.device.last_time < 30) { return; }
+  remote.device.last_time = now;
+
+  //remote.emit["key"]({type:"keyup",keyCode:38});
+  var keyCode_v = null;
+  if (vertical > 20) {keyCode_v = 38;}
+  if (vertical < 00) {keyCode_v = 40;}
+  if (keyCode_v != remote.device.keyCode_v && remote.device.keyCode_v != null) {
+  remote.emit['key']({type:'keyup',keyCode: remote.device.keyCode_v});
+  }
+  remote.device.keyCode_v = keyCode_v;
+  if (keyCode_v != null) {
+  remote.emit['key']({type:'keydown',keyCode: keyCode_v});
+  }
+  
+  var keyCode_h = null;
+  if (horizontal < -20) {keyCode_h = 39;}
+  if (horizontal > 20) {keyCode_h = 37;}
+
+  if (keyCode_h != remote.device.keyCode_h && remote.device.keyCode_h != null) {
+      remote.emit['key']({type:'keyup',keyCode: remote.device.keyCode_h});
+  }
+  remote.device.keyCode_h = keyCode_h;
+  if (keyCode_h != null) {
+      remote.emit['key']({type:'keydown',keyCode: keyCode_h});
   }
 }, false);

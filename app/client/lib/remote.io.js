@@ -1,5 +1,5 @@
 //if (typeof remote != 'undefined') { return 0; }
-var remote_io_site = 'app.gfw4.info'; //'10.228.208.39'; 
+var remote_io_site = '10.228.208.45'; //'app.gfw4.info'; 
 
 var remote = function() {};
 remote.init = function() {
@@ -28,7 +28,7 @@ remote.init = function() {
     }
     appendRequire('http://'+remote_io_site+'/javascripts/remote.events.js');
     appendRequire('http://'+remote_io_site+'/javascripts/remote.methods.js');
-    //appendRequire('http://'+remote_io_site+'/javascripts/remote.device.js');
+    appendRequire('http://'+remote_io_site+'/javascripts/remote.device.js');
 };
 
 remote.initEvent = function() {

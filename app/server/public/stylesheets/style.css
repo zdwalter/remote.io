@@ -60,4 +60,27 @@ div#function{
     left: 370px;
 }
 
+button {
+  color: #00B7FF;
+  height: 100px;
+  width: 100px;
+  font-size: 100px;
+}
+
+button#left {
+  position: absolute;
+  left: 50px;
+  height: 300px;
+  width: 300px;
+}
+
+
+button#right{
+  position: absolute;
+  right: 50px;
+  height: 300px;
+  width: 300px;
+}
+
+
 
